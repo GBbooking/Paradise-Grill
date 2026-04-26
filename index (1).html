@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Paradise Grill – Hotel & Guesthouse</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --dark: #0d0d0d;
+    --dark2: #161616;
+    --dark3: #1e1e1e;
+    --cream: #f5f0e8;
+    --cream2: #ede8dc;
+    --text: #2a2a2a;
+    --muted: #888;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(13,13,13,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(201,168,76,0.2); }
+  .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--gold); letter-spacing: 1px; cursor: pointer; }
+  .nav-logo span { color: #fff; font-weight: 300; }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.2s; cursor: pointer; }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+  .nav-cta { background: var(--gold); color: var(--dark); padding: 10px 22px; border-radius: 2px; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--gold-light); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 24px; height: 2px; background: #fff; transition: all 0.3s; }
+  .mobile-menu { display: none; position: fixed; top: 72px; left: 0; right: 0; background: rgba(13,13,13,0.98); padding: 24px; z-index: 99; border-bottom: 1px solid rgba(201,168,76,0.2); }
+  .mobile-menu a { display: block; color: rgba(255,255,255,0.8); text-decoration: none; padding: 14px 0; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer; }
+
+  /* HERO */
+  .hero { height: 100vh; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #0d0d0d 0%, #1a1208 50%, #0d0d0d 100%); }
+  .hero-pattern { position: absolute; inset: 0; opacity: 0.04; background-image: repeating-linear-gradient(45deg, #c9a84c 0, #c9a84c 1px, transparent 0, transparent 50%); background-size: 40px 40px; }
+  .hero-img { position: absolute; inset: 0; object-fit: cover; width: 100%; height: 100%; opacity: 0.35; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(13,13,13,0.3) 0%, rgba(13,13,13,0.6) 100%); }
+  .hero-content { position: relative; text-align: center; max-width: 800px; padding: 0 24px; }
+  .hero-badge { display: inline-block; border: 1px solid var(--gold); color: var(--gold); font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; padding: 6px 16px; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(3rem, 8vw, 6rem); color: #fff; line-height: 1.05; font-weight: 300; margin-bottom: 20px; }
+  .hero h1 em { color: var(--gold); font-style: italic; }
+  .hero p { color: rgba(255,255,255,0.65); font-size: 1.1rem; margin-bottom: 40px; font-weight: 300; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--gold); color: var(--dark); padding: 14px 32px; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: #fff; padding: 14px 32px; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 500; border: 1px solid rgba(255,255,255,0.4); cursor: pointer; transition: all 0.2s; border-radius: 2px; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .scroll-hint { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent); animation: scrollDown 1.5s ease-in-out infinite; }
+  @keyframes scrollDown { 0%,100%{opacity:0.3;transform:scaleY(0.8)} 50%{opacity:1;transform:scaleY(1)} }
+
+  /* SECTIONS */
+  .section { padding: 100px 24px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; display: block; }
+  .section-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 300; line-height: 1.1; color: var(--dark); margin-bottom: 16px; }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .section-sub { color: var(--muted); font-size: 1rem; max-width: 540px; line-height: 1.7; }
+  .divider { width: 60px; height: 1px; background: var(--gold); margin: 20px 0; }
+
+  /* ROOMS GRID */
+  .rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; margin-top: 56px; }
+  .room-card { background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06); transition: all 0.3s; }
+  .room-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(0,0,0,0.12); }
+  .room-img { width: 100%; height: 220px; object-fit: cover; display: block; }
+  .room-img-placeholder { width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+  .room-body { padding: 24px; }
+  .room-name { font-size: 1.4rem; font-weight: 400; color: var(--dark); margin-bottom: 8px; }
+  .room-desc { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+  .room-footer { display: flex; align-items: center; justify-content: space-between; }
+  .room-price { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--gold); font-weight: 600; }
+  .room-price span { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+  .btn-book { background: var(--dark); color: #fff; padding: 10px 20px; font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; border: none; cursor: pointer; border-radius: 2px; transition: background 0.2s; }
+  .btn-book:hover { background: var(--gold); color: var(--dark); }
+
+  /* FEATURES */
+  .features-bg { background: var(--dark2); padding: 100px 24px; }
+  .features-inner { max-width: 1200px; margin: 0 auto; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 40px; margin-top: 56px; }
+  .feature-card { text-align: center; }
+  .feature-icon { width: 56px; height: 56px; border: 1px solid rgba(201,168,76,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.5rem; }
+  .feature-title { font-size: 1.1rem; color: #fff; margin-bottom: 8px; }
+  .feature-desc { color: rgba(255,255,255,0.45); font-size: 0.85rem; line-height: 1.6; }
+
+  /* BOOKING FORM */
+  .booking-bg { background: var(--cream2); }
+  .booking-form { background: #fff; border-radius: 4px; padding: 48px; box-shadow: 0 8px 48px rgba(0,0,0,0.08); max-width: 760px; margin: 56px auto 0; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1/-1; }
+  .form-label { font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+  .form-input { border: 1px solid #e0dcd4; border-radius: 2px; padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text); background: #fafaf8; transition: border-color 0.2s; }
+  .form-input:focus { outline: none; border-color: var(--gold); background: #fff; }
+  .whatsapp-btn { width: 100%; background: #25D366; color: #fff; border: none; padding: 16px; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; cursor: pointer; border-radius: 2px; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s; }
+  .whatsapp-btn:hover { background: #1eb857; }
+  .whatsapp-btn svg { width: 22px; height: 22px; }
+
+  /* ABOUT */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about-img-wrap { position: relative; }
+  .about-img { width: 100%; border-radius: 2px; display: block; }
+  .about-img-placeholder { width: 100%; height: 480px; background: linear-gradient(135deg, var(--dark2), var(--dark3)); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 6rem; }
+  .about-badge { position: absolute; bottom: -20px; right: -20px; background: var(--gold); color: var(--dark); padding: 20px 24px; text-align: center; }
+  .about-badge .num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 600; line-height: 1; display: block; }
+  .about-badge .txt { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; display: block; margin-top: 4px; }
+  .stats-row { display: flex; gap: 40px; margin-top: 40px; }
+  .stat { }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 600; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; margin-top: 56px; }
+  .contact-info h3 { font-size: 1.8rem; margin-bottom: 20px; color: var(--dark); }
+  .contact-item { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+  .contact-icon { width: 40px; height: 40px; background: var(--cream2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+  .contact-text strong { display: block; font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .contact-text p { color: var(--text); font-size: 0.95rem; }
+
+  /* FOOTER */
+  footer { background: var(--dark); color: rgba(255,255,255,0.5); text-align: center; padding: 40px 24px; font-size: 0.85rem; }
+  footer .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 12px; }
+  footer p { margin-top: 8px; font-size: 0.78rem; letter-spacing: 1px; }
+
+  /* ADMIN */
+  .admin-login { min-height: 100vh; background: var(--dark); display: flex; align-items: center; justify-content: center; }
+  .login-box { background: var(--dark2); border: 1px solid rgba(201,168,76,0.2); padding: 48px; width: 360px; border-radius: 4px; }
+  .login-box h2 { color: var(--gold); margin-bottom: 8px; font-size: 1.8rem; }
+  .login-box p { color: var(--muted); font-size: 0.85rem; margin-bottom: 32px; }
+  .admin-input { width: 100%; background: var(--dark3); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 12px 16px; border-radius: 2px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; margin-bottom: 16px; }
+  .admin-input:focus { outline: none; border-color: var(--gold); }
+  .admin-btn { width: 100%; background: var(--gold); color: var(--dark); border: none; padding: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; font-size: 0.85rem; cursor: pointer; border-radius: 2px; }
+  .login-error { color: #ff6b6b; font-size: 0.82rem; margin-top: 8px; display: none; }
+
+  /* ADMIN DASHBOARD */
+  .admin-dash { min-height: 100vh; background: #111; }
+  .admin-top { background: var(--dark2); border-bottom: 1px solid rgba(201,168,76,0.15); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .admin-top h1 { font-size: 1.3rem; color: var(--gold); }
+  .admin-top-right { display: flex; align-items: center; gap: 16px; }
+  .admin-body { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+  .admin-tabs { display: flex; gap: 4px; margin-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .tab-btn { background: none; border: none; color: rgba(255,255,255,0.5); padding: 10px 20px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.2s; }
+  .tab-btn.active, .tab-btn:hover { color: var(--gold); border-bottom-color: var(--gold); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .admin-card { background: var(--dark2); border: 1px solid rgba(255,255,255,0.06); border-radius: 4px; padding: 28px; margin-bottom: 20px; }
+  .admin-card h3 { color: #fff; font-size: 1.2rem; margin-bottom: 20px; }
+  .admin-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .admin-form-group { display: flex; flex-direction: column; gap: 6px; }
+  .admin-form-group.full { grid-column: 1/-1; }
+  .admin-label { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+  .admin-table { width: 100%; border-collapse: collapse; }
+  .admin-table th { text-align: left; font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.35); padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .admin-table td { padding: 14px; border-bottom: 1px solid rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); font-size: 0.9rem; vertical-align: middle; }
+  .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .del-btn { background: rgba(255,100,100,0.15); color: #ff6b6b; border: none; padding: 6px 12px; border-radius: 2px; cursor: pointer; font-size: 0.78rem; }
+  .del-btn:hover { background: rgba(255,100,100,0.25); }
+  .edit-btn { background: rgba(201,168,76,0.15); color: var(--gold); border: none; padding: 6px 12px; border-radius: 2px; cursor: pointer; font-size: 0.78rem; margin-right: 6px; }
+  .edit-btn:hover { background: rgba(201,168,76,0.25); }
+  .badge-green { background: rgba(37,211,102,0.15); color: #25D366; font-size: 0.72rem; padding: 3px 8px; border-radius: 20px; }
+  .admin-section-title { color: rgba(255,255,255,0.6); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+  .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .setting-label { color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+  .setting-sub { color: rgba(255,255,255,0.3); font-size: 0.78rem; margin-top: 2px; }
+  .inline-edit { display: flex; gap: 8px; align-items: center; }
+  .save-btn { background: var(--gold); color: var(--dark); border: none; padding: 8px 16px; font-size: 0.78rem; font-weight: 600; border-radius: 2px; cursor: pointer; letter-spacing: 1px; }
+  .logout-btn { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.08); padding: 8px 16px; border-radius: 2px; cursor: pointer; font-size: 0.8rem; }
+  .logout-btn:hover { color: #ff6b6b; border-color: rgba(255,100,100,0.3); }
+  .success-msg { background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.25); color: #25D366; padding: 12px 16px; border-radius: 2px; font-size: 0.85rem; margin-bottom: 16px; display: none; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 32px; right: 32px; background: var(--dark); color: #fff; padding: 14px 20px; border-radius: 4px; border-left: 3px solid var(--gold); font-size: 0.85rem; z-index: 9999; transform: translateX(120%); transition: transform 0.3s; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+  .toast.show { transform: translateX(0); }
+
+  /* PAGE HERO */
+  .page-hero { background: var(--dark); padding: 140px 24px 80px; text-align: center; }
+  .page-hero h1 { font-size: clamp(2.5rem, 6vw, 4rem); color: #fff; font-weight: 300; }
+  .page-hero h1 em { color: var(--gold); font-style: italic; }
+  .page-hero p { color: rgba(255,255,255,0.5); margin-top: 12px; font-size: 1rem; }
+  .breadcrumb { color: rgba(255,255,255,0.3); font-size: 0.78rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+  .breadcrumb span { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .form-grid { grid-template-columns: 1fr; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .admin-grid2 { grid-template-columns: 1fr; }
+    .booking-form { padding: 28px 20px; }
+    .stats-row { flex-wrap: wrap; gap: 24px; }
+    .about-badge { right: 0; }
+  }
+  @media (max-width: 480px) {
+    .rooms-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="navigate('home')">Paradise <span>Grill</span></div>
+    <ul class="nav-links">
+      <li><a onclick="navigate('home')" id="nav-home">Home</a></li>
+      <li><a onclick="navigate('rooms')" id="nav-rooms">Rooms</a></li>
+      <li><a onclick="navigate('about')" id="nav-about">About</a></li>
+      <li><a onclick="navigate('contact')" id="nav-contact">Contact</a></li>
+    </ul>
+    <button class="nav-cta" onclick="navigate('booking')">Book Now</button>
+    <div class="hamburger" onclick="toggleMobile()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a onclick="navigate('home');toggleMobile()">Home</a>
+  <a onclick="navigate('rooms');toggleMobile()">Rooms</a>
+  <a onclick="navigate('about');toggleMobile()">About</a>
+  <a onclick="navigate('contact');toggleMobile()">Contact</a>
+  <a onclick="navigate('booking');toggleMobile()" style="color:var(--gold)">Book Now →</a>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-pattern"></div>
+    <img class="hero-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600&q=80" alt="Hotel" onerror="this.style.display='none'"/>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">Luxury Stays in the Valley</div>
+      <h1>Welcome to<br/><em>Paradise Grill</em></h1>
+      <p>Experience unmatched comfort, warm hospitality, and breathtaking views at our boutique hotel & guesthouse.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="navigate('booking')">Reserve Your Room</button>
+        <button class="btn-outline" onclick="navigate('rooms')">Explore Rooms</button>
+      </div>
+    </div>
+    <div class="scroll-hint"><div class="scroll-line"></div></div>
+  </div>
+
+  <!-- Featured Rooms -->
+  <div class="section">
+    <span class="section-label">Our Accommodations</span>
+    <h2 class="section-title">Rooms &amp; <em>Suites</em></h2>
+    <div class="divider"></div>
+    <p class="section-sub">Each room is thoughtfully designed for your comfort — clean, cozy, and filled with everything you need.</p>
+    <div class="rooms-grid" id="homeRoomsGrid"></div>
+    <div style="text-align:center;margin-top:48px">
+      <button class="btn-primary" onclick="navigate('rooms')">View All Rooms</button>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features-bg">
+    <div class="features-inner">
+      <span class="section-label" style="color:var(--gold)">Why Choose Us</span>
+      <h2 class="section-title" style="color:#fff">Hotel <em>Amenities</em></h2>
+      <div class="divider"></div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🍽️</div>
+          <div class="feature-title">Restaurant & Grill</div>
+          <div class="feature-desc">Enjoy fresh, home-cooked meals and our signature grill dishes right at the hotel.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📶</div>
+          <div class="feature-title">Free WiFi</div>
+          <div class="feature-desc">High-speed internet in all rooms and common areas throughout your stay.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🅿️</div>
+          <div class="feature-title">Free Parking</div>
+          <div class="feature-desc">Spacious, secure parking available for all guests at no extra charge.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">❄️</div>
+          <div class="feature-title">Air Conditioned</div>
+          <div class="feature-desc">All rooms equipped with modern AC and climate control for your comfort.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛎️</div>
+          <div class="feature-title">24/7 Service</div>
+          <div class="feature-desc">Round-the-clock front desk and room service, whenever you need it.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <div class="feature-title">WhatsApp Booking</div>
+          <div class="feature-desc">Book instantly via WhatsApp — fast, simple, and direct with the owner.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Strip -->
+  <div style="background:var(--gold);padding:60px 24px;text-align:center">
+    <h2 style="font-size:2.2rem;color:var(--dark);margin-bottom:12px">Ready to <em>Book Your Stay?</em></h2>
+    <p style="color:rgba(0,0,0,0.55);margin-bottom:28px;font-size:0.95rem">Instant confirmation via WhatsApp. No hidden fees.</p>
+    <button class="btn-primary" style="background:var(--dark);color:#fff" onclick="navigate('booking')">Book on WhatsApp Now</button>
+  </div>
+
+  <footer>
+    <div class="logo">Paradise Grill</div>
+    <p>Luxury Stays · Warm Hospitality · Breathtaking Views</p>
+    <p style="margin-top:16px">© 2024 Paradise Grill. All rights reserved.</p>
+  </footer>
+</div>
+
+<!-- ===== ROOMS PAGE ===== -->
+<div class="page" id="page-rooms">
+  <div class="page-hero">
+    <div class="breadcrumb">Home / <span>Rooms</span></div>
+    <h1>Our <em>Rooms</em></h1>
+    <p>Choose from our selection of comfortable, well-appointed rooms</p>
+  </div>
+  <div class="section">
+    <div class="rooms-grid" id="allRoomsGrid"></div>
+  </div>
+  <footer>
+    <div class="logo">Paradise Grill</div>
+    <p>© 2024 Paradise Grill. All rights reserved.</p>
+  </footer>
+</div>
+
+<!-- ===== ABOUT PAGE ===== -->
+<div class="page" id="page-about">
+  <div class="page-hero">
+    <div class="breadcrumb">Home / <span>About</span></div>
+    <h1>About <em>Us</em></h1>
+    <p>Our story, our passion, our hospitality</p>
+  </div>
+  <div class="section">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <div class="about-img-placeholder">🏨</div>
+        <div class="about-badge">
+          <span class="num">10+</span>
+          <span class="txt">Years of Hospitality</span>
+        </div>
+      </div>
+      <div>
+        <span class="section-label">Our Story</span>
+        <h2 class="section-title">A Home Away<br/>From <em>Home</em></h2>
+        <div class="divider"></div>
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:16px">Paradise Grill was founded with a simple mission: to offer every guest a warm, comfortable, and affordable stay — without compromising on quality or service.</p>
+        <p style="color:var(--muted);line-height:1.8;margin-bottom:32px">Nestled in a serene location, our boutique hotel combines traditional hospitality with modern amenities, creating an experience that guests return to again and again.</p>
+        <div class="stats-row">
+          <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Guests</div></div>
+          <div class="stat"><div class="stat-num">15+</div><div class="stat-label">Room Types</div></div>
+          <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">Average Rating</div></div>
+        </div>
+        <div style="margin-top:36px">
+          <button class="btn-primary" onclick="navigate('booking')">Book Your Stay</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Values -->
+  <div class="features-bg">
+    <div class="features-inner">
+      <span class="section-label">Our Values</span>
+      <h2 class="section-title" style="color:#fff">What We <em>Stand For</em></h2>
+      <div class="divider"></div>
+      <div class="features-grid" style="margin-top:40px">
+        <div class="feature-card"><div class="feature-icon">🤝</div><div class="feature-title">Genuine Hospitality</div><div class="feature-desc">Every guest is treated like family — warm, respectful, and attentive service.</div></div>
+        <div class="feature-card"><div class="feature-icon">✨</div><div class="feature-title">Cleanliness First</div><div class="feature-desc">Our rooms are immaculate. We maintain the highest standards of hygiene.</div></div>
+        <div class="feature-card"><div class="feature-icon">💰</div><div class="feature-title">Fair Pricing</div><div class="feature-desc">Transparent rates with no hidden fees. Quality stay at honest prices.</div></div>
+        <div class="feature-card"><div class="feature-icon">🌄</div><div class="feature-title">Beautiful Location</div><div class="feature-desc">Enjoy stunning views and a peaceful environment throughout your visit.</div></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="logo">Paradise Grill</div>
+    <p>© 2024 Paradise Grill. All rights reserved.</p>
+  </footer>
+</div>
+
+<!-- ===== CONTACT PAGE ===== -->
+<div class="page" id="page-contact">
+  <div class="page-hero">
+    <div class="breadcrumb">Home / <span>Contact</span></div>
+    <h1>Get in <em>Touch</em></h1>
+    <p>We'd love to hear from you</p>
+  </div>
+  <div class="section">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <span class="section-label">Contact Info</span>
+        <h3 class="section-title">Let's <em>Talk</em></h3>
+        <div class="divider"></div>
+        <div style="margin-top:32px">
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div class="contact-text">
+              <strong>Address</strong>
+              <p>Paradise Grill Hotel,<br/>Valley Road, Azad Kashmir, PK</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📞</div>
+            <div class="contact-text">
+              <strong>Phone / WhatsApp</strong>
+              <p id="contactPhone">+92 355 504 9894</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">✉️</div>
+            <div class="contact-text">
+              <strong>Email</strong>
+              <p>info@paradisegrill.pk</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">🕐</div>
+            <div class="contact-text">
+              <strong>Check-in / Check-out</strong>
+              <p>Check-in: 2:00 PM | Check-out: 12:00 PM</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:32px">
+          <button class="whatsapp-btn" style="max-width:280px" onclick="openWhatsApp()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Chat on WhatsApp
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="booking-form" style="margin-top:0">
+          <h3 style="font-size:1.4rem;margin-bottom:24px;color:var(--dark)">Send a Message</h3>
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Your Name</label>
+              <input class="form-input" type="text" placeholder="Full Name" id="cName"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-input" type="tel" placeholder="03XX XXXXXXX" id="cPhone"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <input class="form-input" type="text" placeholder="Inquiry Subject" id="cSubject"/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Message</label>
+              <textarea class="form-input" rows="5" placeholder="Your message..." id="cMessage" style="resize:vertical"></textarea>
+            </div>
+          </div>
+          <button class="whatsapp-btn" style="margin-top:20px" onclick="sendContactMsg()">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Send via WhatsApp
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="logo">Paradise Grill</div>
+    <p>© 2024 Paradise Grill. All rights reserved.</p>
+  </footer>
+</div>
+
+<!-- ===== BOOKING PAGE ===== -->
+<div class="page" id="page-booking">
+  <div class="page-hero">
+    <div class="breadcrumb">Home / <span>Booking</span></div>
+    <h1>Book Your <em>Room</em></h1>
+    <p>Instant confirmation via WhatsApp — fast and simple</p>
+  </div>
+  <div class="booking-bg" style="padding:80px 24px">
+    <div class="booking-form">
+      <h3 style="font-size:1.6rem;margin-bottom:6px">Reservation Form</h3>
+      <p style="color:var(--muted);font-size:0.88rem;margin-bottom:28px">Fill in your details and we'll confirm availability on WhatsApp instantly.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input class="form-input" type="text" id="bName" placeholder="Enter your full name"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input class="form-input" type="tel" id="bPhone" placeholder="03XX XXXXXXX"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Check-in Date *</label>
+          <input class="form-input" type="date" id="bCheckin"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Check-out Date *</label>
+          <input class="form-input" type="date" id="bCheckout"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Number of Guests *</label>
+          <select class="form-input" id="bGuests">
+            <option value="">Select guests</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Select Room *</label>
+          <select class="form-input" id="bRoom"></select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Special Requests (optional)</label>
+          <textarea class="form-input" id="bNotes" rows="3" placeholder="Any special requests or notes..." style="resize:vertical"></textarea>
+        </div>
+      </div>
+      <div style="background:rgba(37,211,102,0.05);border:1px solid rgba(37,211,102,0.15);border-radius:4px;padding:16px;margin-top:20px;display:flex;gap:12px;align-items:flex-start">
+        <span style="font-size:1.3rem">💬</span>
+        <div>
+          <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:2px">WhatsApp Booking</div>
+          <div style="font-size:0.8rem;color:var(--muted)">Clicking "Confirm Booking" will open WhatsApp with your booking details pre-filled. The owner will confirm availability directly.</div>
+        </div>
+      </div>
+      <button class="whatsapp-btn" onclick="confirmBooking()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Confirm Booking via WhatsApp
+      </button>
+    </div>
+  </div>
+  <footer>
+    <div class="logo">Paradise Grill</div>
+    <p>© 2024 Paradise Grill. All rights reserved.</p>
+  </footer>
+</div>
+
+<!-- ===== ADMIN PAGE ===== -->
+<div class="page" id="page-admin">
+  <!-- Login -->
+  <div id="adminLogin" class="admin-login">
+    <div class="login-box">
+      <h2>Admin Panel</h2>
+      <p>Enter your password to access the dashboard</p>
+      <input class="admin-input" type="password" id="adminPass" placeholder="Password" onkeydown="if(event.key==='Enter')adminLogin()"/>
+      <button class="admin-btn" onclick="adminLogin()">Login →</button>
+      <div class="login-error" id="loginError">Incorrect password. Try again.</div>
+    </div>
+  </div>
+  <!-- Dashboard -->
+  <div id="adminDash" class="admin-dash" style="display:none">
+    <div class="admin-top">
+      <h1>⚙️ Paradise Grill — Admin</h1>
+      <div class="admin-top-right">
+        <span style="color:rgba(255,255,255,0.4);font-size:0.8rem">Logged in</span>
+        <button class="logout-btn" onclick="adminLogout()">Logout</button>
+      </div>
+    </div>
+    <div class="admin-body">
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchTab('rooms')">🛏 Rooms</button>
+        <button class="tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+      </div>
+
+      <!-- ROOMS TAB -->
+      <div class="tab-panel active" id="tab-rooms">
+        <div class="success-msg" id="roomSuccess">✅ Room saved successfully!</div>
+        <div class="admin-card">
+          <h3 id="roomFormTitle">➕ Add New Room</h3>
+          <div class="admin-grid2">
+            <div class="admin-form-group">
+              <label class="admin-label">Room Name *</label>
+              <input class="admin-input" id="rName" placeholder="e.g. Deluxe Double Room"/>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Price per Night (PKR) *</label>
+              <input class="admin-input" id="rPrice" type="number" placeholder="e.g. 3500"/>
+            </div>
+            <div class="admin-form-group full">
+              <label class="admin-label">Description</label>
+              <input class="admin-input" id="rDesc" placeholder="Short description of the room"/>
+            </div>
+            <div class="admin-form-group full">
+              <label class="admin-label">Image URL</label>
+              <input class="admin-input" id="rImg" placeholder="https://... (leave blank for default)"/>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px">
+            <button class="save-btn" onclick="saveRoom()">Save Room</button>
+            <button onclick="cancelEditRoom()" id="cancelRoomBtn" style="display:none;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.08);padding:8px 16px;border-radius:2px;cursor:pointer;font-size:0.78rem">Cancel</button>
+          </div>
+          <input type="hidden" id="editRoomId"/>
+        </div>
+
+        <div class="admin-card">
+          <h3>🛏 All Rooms</h3>
+          <div style="overflow-x:auto">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Room</th>
+                  <th>Price/Night</th>
+                  <th>Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="roomsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tab-panel" id="tab-settings">
+        <div class="success-msg" id="settingSuccess">✅ Settings saved!</div>
+        <div class="admin-card">
+          <h3>📱 WhatsApp Settings</h3>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">WhatsApp Number</div>
+              <div class="setting-sub">Booking messages will be sent to this number</div>
+            </div>
+            <div class="inline-edit">
+              <input class="admin-input" id="waNumber" style="width:180px;margin:0" placeholder="e.g. 923555049894"/>
+              <button class="save-btn" onclick="saveWANumber()">Save</button>
+            </div>
+          </div>
+        </div>
+        <div class="admin-card">
+          <h3>🔐 Security</h3>
+          <div class="setting-row">
+            <div>
+              <div class="setting-label">Change Admin Password</div>
+              <div class="setting-sub">Update your login password</div>
+            </div>
+            <div class="inline-edit">
+              <input class="admin-input" type="password" id="newPassword" style="width:160px;margin:0" placeholder="New password"/>
+              <button class="save-btn" onclick="changePassword()">Update</button>
+            </div>
+          </div>
+        </div>
+        <div class="admin-card">
+          <h3>ℹ️ Hotel Info</h3>
+          <div class="setting-row">
+            <div><div class="setting-label">Hotel Name</div></div>
+            <div class="inline-edit">
+              <input class="admin-input" id="hotelName" style="width:200px;margin:0" placeholder="Paradise Grill"/>
+              <button class="save-btn" onclick="saveHotelInfo()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// =========================================
+// DATA STORE (localStorage)
+// =========================================
+const DEFAULT_PASSWORD = 'admin123';
+const DEFAULT_WA = '923555049894';
+
+const DEFAULT_ROOMS = [
+  { id: 1, name: 'Standard Room', price: 2500, desc: 'Comfortable room with all basic amenities including WiFi, AC, and attached bath.', img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80' },
+  { id: 2, name: 'Deluxe Double Room', price: 4000, desc: 'Spacious room with queen bed, scenic view, flat-screen TV, and premium toiletries.', img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80' },
+  { id: 3, name: 'Family Suite', price: 6500, desc: 'Large suite with two bedrooms, sofa set, mini kitchen, perfect for families of 4–6.', img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80' },
+  { id: 4, name: 'Executive Room', price: 5000, desc: 'Premium room with king-size bed, work desk, luxury bathroom, and valley view.', img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80' },
+  { id: 5, name: 'Economy Single', price: 1800, desc: 'Budget-friendly single room — clean, cozy, with AC and shared facilities.', img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' },
+  { id: 6, name: 'Honeymoon Suite', price: 8000, desc: 'Romantic suite with private balcony, jacuzzi, and special décor for couples.', img: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=600&q=80' },
+];
+
+function getData(key, def) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e) { return def; }
+}
+function setData(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+function getRooms() { return getData('pg_rooms', DEFAULT_ROOMS); }
+function saveRooms(r) { setData('pg_rooms', r); }
+function getWA() { return getData('pg_wa', DEFAULT_WA); }
+function getPassword() { return getData('pg_pass', DEFAULT_PASSWORD); }
+
+// =========================================
+// ROUTING
+// =========================================
+let currentPage = 'home';
+let mobileOpen = false;
+
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  currentPage = page;
+  window.scrollTo(0, 0);
+  if (page === 'home') renderHomeRooms();
+  if (page === 'rooms') renderAllRooms();
+  if (page === 'booking') populateRoomSelect();
+  const isAdmin = page === 'admin';
+  document.getElementById('mainNav').style.display = isAdmin ? 'none' : '';
+}
+
+function toggleMobile() {
+  mobileOpen = !mobileOpen;
+  document.getElementById('mobileMenu').style.display = mobileOpen ? 'block' : 'none';
+}
+
+// Check for /admin in hash on load
+window.addEventListener('hashchange', handleHash);
+function handleHash() {
+  const h = window.location.hash;
+  if (h === '#/admin') navigate('admin');
+}
+
+// =========================================
+// ROOM RENDERING
+// =========================================
+function roomCardHTML(room, showFull = false) {
+  const imgSrc = room.img || '';
+  const imgEl = imgSrc
+    ? `<img class="room-img" src="${imgSrc}" alt="${room.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const emoji = ['🛏️','🏨','🛋️','✨','🌄','💎'][room.id % 6] || '🛏️';
+  return `<div class="room-card">
+    ${imgEl}
+    <div class="room-img-placeholder" style="${imgSrc?'display:none':''}; background:linear-gradient(135deg,#1a1208,#2a1f0a);">${emoji}</div>
+    <div class="room-body">
+      <div class="room-name">${room.name}</div>
+      <div class="room-desc">${room.desc}</div>
+      <div class="room-footer">
+        <div class="room-price">PKR ${Number(room.price).toLocaleString()} <span>/night</span></div>
+        <button class="btn-book" onclick="bookRoom('${room.name}')">Book Now</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderHomeRooms() {
+  const rooms = getRooms().slice(0, 3);
+  document.getElementById('homeRoomsGrid').innerHTML = rooms.map(r => roomCardHTML(r)).join('');
+}
+function renderAllRooms() {
+  const rooms = getRooms();
+  document.getElementById('allRoomsGrid').innerHTML = rooms.length
+    ? rooms.map(r => roomCardHTML(r)).join('')
+    : '<p style="color:var(--muted);grid-column:1/-1;text-align:center;padding:60px 0">No rooms available. Add rooms from the admin panel.</p>';
+}
+function bookRoom(name) {
+  navigate('booking');
+  setTimeout(() => {
+    const sel = document.getElementById('bRoom');
+    for(let o of sel.options) { if(o.value === name) { sel.value = name; break; } }
+  }, 100);
+}
+function populateRoomSelect() {
+  const sel = document.getElementById('bRoom');
+  const rooms = getRooms();
+  sel.innerHTML = '<option value="">Choose a room</option>' + rooms.map(r => `<option value="${r.name}">${r.name} — PKR ${Number(r.price).toLocaleString()}/night</option>`).join('');
+}
+
+// =========================================
+// BOOKING FORM
+// =========================================
+function confirmBooking() {
+  const name = document.getElementById('bName').value.trim();
+  const phone = document.getElementById('bPhone').value.trim();
+  const checkin = document.getElementById('bCheckin').value;
+  const checkout = document.getElementById('bCheckout').value;
+  const guests = document.getElementById('bGuests').value;
+  const room = document.getElementById('bRoom').value;
+  const notes = document.getElementById('bNotes').value.trim();
+
+  if (!name || !phone || !checkin || !checkout || !guests || !room) {
+    showToast('⚠️ Please fill in all required fields!');
+    return;
+  }
+  if (new Date(checkout) <= new Date(checkin)) {
+    showToast('⚠️ Check-out must be after check-in!');
+    return;
+  }
+
+  const msg = `🏨 *New Booking Request — Paradise Grill*
+
+👤 *Name:* ${name}
+📞 *Phone:* ${phone}
+🛏️ *Room:* ${room}
+📅 *Check-in:* ${checkin}
+📅 *Check-out:* ${checkout}
+👥 *Guests:* ${guests}${notes ? `\n📝 *Notes:* ${notes}` : ''}
+
+Please confirm availability. Thank you!`;
+
+  const wa = getWA();
+  window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function sendContactMsg() {
+  const name = document.getElementById('cName').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  const subject = document.getElementById('cSubject').value.trim();
+  const message = document.getElementById('cMessage').value.trim();
+  if (!name || !message) { showToast('⚠️ Please fill name and message'); return; }
+  const msg = `Hello, I'm contacting from your website.\n\n*Name:* ${name}\n*Phone:* ${phone || 'N/A'}\n*Subject:* ${subject || 'General Inquiry'}\n\n*Message:*\n${message}`;
+  const wa = getWA();
+  window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+function openWhatsApp() {
+  const wa = getWA();
+  window.open(`https://wa.me/${wa}?text=${encodeURIComponent('Hello, I have an inquiry about Paradise Grill Hotel.')}`, '_blank');
+}
+
+// =========================================
+// ADMIN AUTH
+// =========================================
+let adminAuthed = false;
+
+function adminLogin() {
+  const pass = document.getElementById('adminPass').value;
+  if (pass === getPassword()) {
+    adminAuthed = true;
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminDash').style.display = 'block';
+    loadAdminData();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    setTimeout(() => document.getElementById('loginError').style.display = 'none', 3000);
+  }
+}
+function adminLogout() {
+  adminAuthed = false;
+  document.getElementById('adminLogin').style.display = 'flex';
+  document.getElementById('adminDash').style.display = 'none';
+  document.getElementById('adminPass').value = '';
+  navigate('home');
+}
+
+// =========================================
+// ADMIN DASHBOARD
+// =========================================
+let editingRoomId = null;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function loadAdminData() {
+  renderAdminRooms();
+  document.getElementById('waNumber').value = getWA();
+  document.getElementById('hotelName').value = getData('pg_hotelname', 'Paradise Grill');
+}
+
+function renderAdminRooms() {
+  const rooms = getRooms();
+  const tbody = document.getElementById('roomsTableBody');
+  if (!rooms.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:rgba(255,255,255,0.3);padding:32px">No rooms yet. Add one above.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rooms.map(r => `
+    <tr>
+      <td><strong style="color:#fff">${r.name}</strong></td>
+      <td>PKR ${Number(r.price).toLocaleString()}</td>
+      <td style="color:rgba(255,255,255,0.5);font-size:0.82rem;max-width:250px">${r.desc}</td>
+      <td>
+        <button class="edit-btn" onclick="editRoom(${r.id})">Edit</button>
+        <button class="del-btn" onclick="deleteRoom(${r.id})">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function saveRoom() {
+  const name = document.getElementById('rName').value.trim();
+  const price = document.getElementById('rPrice').value.trim();
+  const desc = document.getElementById('rDesc').value.trim();
+  const img = document.getElementById('rImg').value.trim();
+  if (!name || !price) { showToast('⚠️ Room name and price are required!'); return; }
+  const rooms = getRooms();
+  if (editingRoomId) {
+    const idx = rooms.findIndex(r => r.id === editingRoomId);
+    if (idx > -1) { rooms[idx] = { ...rooms[idx], name, price: Number(price), desc, img }; }
+    editingRoomId = null;
+  } else {
+    const maxId = rooms.reduce((m, r) => Math.max(m, r.id), 0);
+    rooms.push({ id: maxId + 1, name, price: Number(price), desc, img });
+  }
+  saveRooms(rooms);
+  clearRoomForm();
+  renderAdminRooms();
+  document.getElementById('roomSuccess').style.display = 'block';
+  setTimeout(() => document.getElementById('roomSuccess').style.display = 'none', 3000);
+}
+
+function editRoom(id) {
+  const rooms = getRooms();
+  const room = rooms.find(r => r.id === id);
+  if (!room) return;
+  editingRoomId = id;
+  document.getElementById('rName').value = room.name;
+  document.getElementById('rPrice').value = room.price;
+  document.getElementById('rDesc').value = room.desc;
+  document.getElementById('rImg').value = room.img || '';
+  document.getElementById('roomFormTitle').textContent = '✏️ Edit Room';
+  document.getElementById('cancelRoomBtn').style.display = 'inline-block';
+  document.querySelector('#tab-rooms').scrollIntoView({ behavior: 'smooth' });
+}
+
+function cancelEditRoom() {
+  editingRoomId = null;
+  clearRoomForm();
+}
+
+function clearRoomForm() {
+  document.getElementById('rName').value = '';
+  document.getElementById('rPrice').value = '';
+  document.getElementById('rDesc').value = '';
+  document.getElementById('rImg').value = '';
+  document.getElementById('roomFormTitle').textContent = '➕ Add New Room';
+  document.getElementById('cancelRoomBtn').style.display = 'none';
+}
+
+function deleteRoom(id) {
+  if (!confirm('Delete this room?')) return;
+  const rooms = getRooms().filter(r => r.id !== id);
+  saveRooms(rooms);
+  renderAdminRooms();
+  showToast('🗑️ Room deleted');
+}
+
+function saveWANumber() {
+  const num = document.getElementById('waNumber').value.trim().replace(/\D/g,'');
+  if (!num || num.length < 10) { showToast('⚠️ Enter a valid number (digits only, no +)'); return; }
+  setData('pg_wa', num);
+  // Update contact page phone display
+  document.getElementById('contactPhone').textContent = '+' + num;
+  showSettingSuccess();
+  showToast('✅ WhatsApp number updated!');
+}
+
+function changePassword() {
+  const np = document.getElementById('newPassword').value;
+  if (!np || np.length < 4) { showToast('⚠️ Password must be at least 4 characters'); return; }
+  setData('pg_pass', np);
+  document.getElementById('newPassword').value = '';
+  showSettingSuccess();
+  showToast('✅ Password updated!');
+}
+
+function saveHotelInfo() {
+  const name = document.getElementById('hotelName').value.trim();
+  if (!name) return;
+  setData('pg_hotelname', name);
+  showSettingSuccess();
+  showToast('✅ Hotel info saved!');
+}
+
+function showSettingSuccess() {
+  const el = document.getElementById('settingSuccess');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+// =========================================
+// TOAST
+// =========================================
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// =========================================
+// INIT
+// =========================================
+// Set today as min date for booking inputs
+const today = new Date().toISOString().split('T')[0];
+document.getElementById('bCheckin').min = today;
+document.getElementById('bCheckout').min = today;
+document.getElementById('bCheckin').addEventListener('change', function() {
+  document.getElementById('bCheckout').min = this.value;
+});
+
+// Hash-based routing for admin
+if (window.location.hash === '#/admin') navigate('admin');
+else navigate('home');
+</script>
+</body>
+</html>
